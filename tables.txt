@@ -1,0 +1,60 @@
+CREATE TABLE wp
+(
+    id_wp INT NOT NULL,
+    tanggal_pengajuan DATE NOT NULL,
+    nama_pekerjaan VARCHAR(50) NOT NULL,
+    detail_pekerjaan VARCHAR(250),
+    lokasi_pekerjaan VARCHAR(30) NOT NULL,
+    pengawas_pekerjaan VARCHAR(30),
+    pengawas_k3 VARCHAR(30),
+    tanggal_mulai DATETIME,
+    tanggal_selesai DATETIME,
+    klasifikasi_pekerjaan VARCHAR(200),
+    klasifikasi_lainnya VARCHAR(50),
+    prosedur_pekerjaan VARCHAR(150),
+    prosedur_lainnya VARCHAR(50),
+    hirarc VARCHAR(100),
+    jsa VARCHAR(100),
+    prosedur_kerja VARCHAR(100),
+    sertifikat VARCHAR(100),
+    PRIMARY KEY (id_wp)
+)
+
+CREATE TABLE jsa
+(
+    id_jsa INT NOT NULL AUTO_INCREMENT,
+    tahap_pekerjaan VARCHAR(250),
+    potensi_risiko VARCHAR(250),
+    pengendalian_risiko VARCHAR(250),
+    wp_id INT NOT NULL,
+    PRIMARY KEY (id_jsa),
+)
+
+CREATE TABLE presensi
+(
+    id_presensi INT NOT NULL AUTO_INCREMENT,
+    nama VARCHAR(30) NOT NULL,
+    waktu DATETIME NOT NULL,
+    foto VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id_presensi)
+)
+
+CREATE TABLE lb3
+(
+    id_lb3 INT NOT NULL AUTO_INCREMENT,
+    tanggal DATE NOT NULL,
+    jenis VARCHAR(15) NOT NULL,
+    status VARCHAR(7) NOT NULL,
+    jumlah FLOAT NOT NULL,
+    PRIMARY KEY (id_lb3)
+)
+
+CREATE TABLE limbah
+(
+    id_limbah INT NOT NULL AUTO_INCREMENT,
+    tanggal DATE NOT NULL,
+    jenis VARCHAR(10) NOT NULL,
+    parameter VARCHAR(5) NOT NULL,
+    nilai FLOAT NOT NULL,
+    PRIMARY KEY (id_limbah)
+)
