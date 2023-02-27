@@ -6,3 +6,12 @@ CREATE TABLE irradiance
     value FLOAT NOT NULL,
     PRIMARY KEY (id_irr)
 )
+
+CREATE TABLE rompltd
+(
+    id_pltd INT NOT NULL AUTO_INCREMENT,
+    unit INT NOT NULL,
+    tanggal DATE NOT NULL,
+    status INT NOT NULL,
+    PRIMARY KEY (id_pltd)
+)

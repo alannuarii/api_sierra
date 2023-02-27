@@ -2,6 +2,7 @@ from app import app
 from flask import jsonify, request
 from app.controller.irradiance import Irradiance
 from app.controller.weather import Weather
+from app.controller.rom import ROM
 
 @app.route('/irradiance', methods=['GET','POST'])
 def upload_irradiance():
@@ -39,4 +40,17 @@ def get_weather():
         'data': result
     }   
     
+    return jsonify(response), 200
+
+
+@app.route('/rom', methods=['GET','POST'])
+def upload_rom():
+    if request.method == 'POST':
+        object_rom = ROM()
+        object_rom.upload_rom()
+
+    response = {
+        'message':'Data berhasil dikirim'
+    }
+
     return jsonify(response), 200
