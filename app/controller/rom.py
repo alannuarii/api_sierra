@@ -55,3 +55,18 @@ class ROM:
     def insert_bss(self, unit, tanggal, status):
         query = f"INSERT INTO rombss (unit, tanggal, status) VALUES ({unit}, '{tanggal}', {status})"
         connection(query, 'insert')
+
+    def get_pltd(self, tanggal):
+        query = f"SELECT * FROM rompltd WHERE tanggal = '{tanggal}'"
+        result = connection(query, 'select')
+        return result
+    
+    def get_pv(self, tanggal):
+        query = f"SELECT * FROM rompv WHERE tanggal = '{tanggal}'"
+        result = connection(query, 'select')
+        return result
+    
+    def get_bss(self, tanggal):
+        query = f"SELECT * FROM rombss WHERE tanggal = '{tanggal}'"
+        result = connection(query, 'select')
+        return result

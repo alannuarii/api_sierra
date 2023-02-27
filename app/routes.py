@@ -54,3 +54,42 @@ def upload_rom():
     }
 
     return jsonify(response), 200
+
+
+@app.route('/rompltd/<tanggal>')
+def get_rompltd(tanggal):
+    object_rom = ROM()
+    result = object_rom.get_pltd(tanggal)
+
+    response = {
+        'message':'Sukses',
+        'data': result
+    }   
+    
+    return jsonify(response), 200
+
+
+@app.route('/rompv/<tanggal>')
+def get_rompv(tanggal):
+    object_rom = ROM()
+    result = object_rom.get_pv(tanggal)
+
+    response = {
+        'message':'Sukses',
+        'data': result
+    }   
+    
+    return jsonify(response), 200
+
+
+@app.route('/rombss/<tanggal>')
+def get_rombss(tanggal):
+    object_rom = ROM()
+    result = object_rom.get_bss(tanggal)
+
+    response = {
+        'message':'Sukses',
+        'data': result
+    }   
+    
+    return jsonify(response), 200
