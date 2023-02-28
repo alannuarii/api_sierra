@@ -30,10 +30,23 @@ def get_irradiance(tanggal):
     return jsonify(response), 200
 
 
-@app.route('/weather')
-def get_weather():
+@app.route('/weather-tomorrow')
+def get_weather_tomorrow():
     object_weather = Weather()
-    result = object_weather.get_weather()
+    result = object_weather.get_tomorrow()
+
+    response = {
+        'message':'Sukses',
+        'data': result
+    }   
+    
+    return jsonify(response), 200
+
+
+@app.route('/weather-today')
+def get_weather_tomorrow():
+    object_weather = Weather()
+    result = object_weather.get_today()
 
     response = {
         'message':'Sukses',
