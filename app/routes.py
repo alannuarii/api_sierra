@@ -44,7 +44,7 @@ def get_weather_tomorrow():
 
 
 @app.route('/weather-today')
-def get_weather_tomorrow():
+def get_weather_today():
     object_weather = Weather()
     result = object_weather.get_today()
 
