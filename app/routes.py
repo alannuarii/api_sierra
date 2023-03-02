@@ -122,3 +122,16 @@ def get_rombss(tanggal):
     }   
     
     return jsonify(response), 200
+
+
+@app.route('/irradiance/tanggal')
+def get_irradiance_4days():
+    object_irradiance = Irradiance()
+    result = object_irradiance.get_4days()
+
+    response = {
+        'message':'Sukses',
+        'data': result
+    }   
+    
+    return jsonify(response), 200

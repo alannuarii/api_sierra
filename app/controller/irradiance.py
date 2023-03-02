@@ -1,6 +1,6 @@
 from flask import request
 from db import connection
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import pandas as pd
 
 class Irradiance:
@@ -38,6 +38,11 @@ class Irradiance:
         awal = full_awal.strftime('%Y-%m-%d')
         akhir = full_akhir.strftime('%Y-%m-%d')
         query = f"SELECT waktu, value FROM irradiance WHERE tanggal BETWEEN '{awal}' AND '{akhir}'"
+        result = connection(query, 'select')
+        return result
+    
+    def get_4days(self):
+        query = f"SELECT tanggal FROM irradiance WHERE tanggal BETWEEN DATE_SUB(CURDATE(), INTERVAL 3 DAY) AND CURDATE() GROUP BY tanggal"
         result = connection(query, 'select')
         return result
 
