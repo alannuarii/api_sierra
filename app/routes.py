@@ -6,6 +6,15 @@ from app.controller.rom import ROM
 from app.controller.user import User
 
 
+@app.route('/login', methods=['GET','POST'])
+def login():
+    object_user = User()
+    if request.method == 'POST':
+        result = object_user.login()
+
+    return jsonify(result), 200
+
+
 @app.route('/register', methods=['GET','POST'])
 def register():
     if request.method == 'POST':
