@@ -3,6 +3,22 @@ from flask import jsonify, request
 from app.controller.irradiance import Irradiance
 from app.controller.weather import Weather
 from app.controller.rom import ROM
+from app.controller.user import User
+
+
+@app.route('/register', methods=['GET','POST'])
+def register():
+    if request.method == 'POST':
+        object_user = User()
+        result = object_user.register()
+
+    response = {
+        'message':'Data berhasil dikirim',
+        'result': result
+    }
+
+    return jsonify(response), 200
+
 
 @app.route('/irradiance', methods=['GET','POST'])
 def upload_irradiance():

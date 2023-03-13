@@ -15,3 +15,13 @@ CREATE TABLE rompltd
     status INT NOT NULL,
     PRIMARY KEY (id_pltd)
 )
+
+CREATE TABLE user
+(
+    id_user INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(30) NOT NULL,
+    email VARCHAR(30) NOT NULL,
+    password VARCHAR(200) NOT NULL,
+    role INT NOT NULL,
+    PRIMARY KEY (id_user)
+)
