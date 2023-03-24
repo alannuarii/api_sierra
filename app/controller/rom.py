@@ -45,28 +45,34 @@ class ROM:
                 start_tanggal += timedelta(days=1)
 
     def insert_pltd(self, unit, tanggal, status):
-        query = f"INSERT INTO rompltd (unit, tanggal, status) VALUES ({unit}, '{tanggal}', {status})"
-        connection(query, 'insert')
+        query = f"INSERT INTO rompltd (unit, tanggal, status) VALUES (%s, %s, %s)"
+        value = [unit, tanggal, status]
+        connection(query, 'insert', value)
 
     def insert_pv(self, unit, tanggal, status):
-        query = f"INSERT INTO rompv (unit, tanggal, status) VALUES ({unit}, '{tanggal}', {status})"
-        connection(query, 'insert')
+        query = f"INSERT INTO rompv (unit, tanggal, status) VALUES (%s, %s, %s)"
+        value = [unit, tanggal, status]
+        connection(query, 'insert', value)
 
     def insert_bss(self, unit, tanggal, status):
-        query = f"INSERT INTO rombss (unit, tanggal, status) VALUES ({unit}, '{tanggal}', {status})"
-        connection(query, 'insert')
+        query = f"INSERT INTO rombss (unit, tanggal, status) VALUES (%s, %s, %s)"
+        value = [unit, tanggal, status]
+        connection(query, 'insert', value)
 
     def get_pltd(self, tanggal):
-        query = f"SELECT * FROM rompltd WHERE tanggal = '{tanggal}'"
-        result = connection(query, 'select')
+        query = f"SELECT * FROM rompltd WHERE tanggal = %s"
+        value = [tanggal]
+        result = connection(query, 'select', value)
         return result
     
     def get_pv(self, tanggal):
-        query = f"SELECT * FROM rompv WHERE tanggal = '{tanggal}'"
-        result = connection(query, 'select')
+        query = f"SELECT * FROM rompv WHERE tanggal = %s"
+        value = [tanggal]
+        result = connection(query, 'select', value)
         return result
     
     def get_bss(self, tanggal):
-        query = f"SELECT * FROM rombss WHERE tanggal = '{tanggal}'"
-        result = connection(query, 'select')
+        query = f"SELECT * FROM rombss WHERE tanggal = %s"
+        value = [tanggal]
+        result = connection(query, 'select', value)
         return result

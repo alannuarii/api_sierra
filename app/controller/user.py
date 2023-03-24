@@ -15,8 +15,9 @@ class User:
 
 
     def get_user(self, email):
-        query = f"SELECT * FROM user WHERE email = '{email}'"
-        result = connection(query, 'select')
+        query = f"SELECT * FROM user WHERE email = %s"
+        value = [email]
+        result = connection(query, 'select', value)
         return result
 
 
@@ -57,8 +58,9 @@ class User:
     
 
     def insert_user(self, name, email, password, role):
-        query = f"INSERT INTO user (name, email, password, role) VALUES ('{name}', '{email}', '{password}', {role})"
-        connection(query, 'insert')
+        query = f"INSERT INTO user (name, email, password, role) VALUES (%s, %s, %s, %s)"
+        value = [name, email, password, role]
+        connection(query, 'insert', value)
 
 
     def register(self):

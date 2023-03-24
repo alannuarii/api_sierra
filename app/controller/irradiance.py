@@ -28,8 +28,9 @@ class Irradiance:
             self.insert_irradiance(tanggal, self.time_average[i], value_irradiance[i])
 
     def insert_irradiance(self, tanggal, waktu, value):
-        query = f"INSERT INTO irradiance (tanggal, waktu, value) VALUES ('{tanggal}', '{waktu}', {value})"
-        connection(query, 'insert')
+        query = f"INSERT INTO irradiance (tanggal, waktu, value) VALUES (%s, %s, %s)"
+        value = [tanggal, waktu, value]
+        connection(query, 'insert', value)
 
     def get_irradiance(self, tanggal):
         tanggal_plus = datetime.strptime(tanggal, '%Y-%m-%d')
@@ -37,13 +38,15 @@ class Irradiance:
         full_akhir = tanggal_plus - timedelta(days=1)
         awal = full_awal.strftime('%Y-%m-%d')
         akhir = full_akhir.strftime('%Y-%m-%d')
-        query = f"SELECT waktu, value FROM irradiance WHERE tanggal BETWEEN '{awal}' AND '{akhir}'"
-        result = connection(query, 'select')
+        query = f"SELECT waktu, value FROM irradiance WHERE tanggal BETWEEN %s AND %s"
+        value = [awal, akhir]
+        result = connection(query, 'select', value)
         return result
     
     def get_4days(self):
-        query = f"SELECT tanggal FROM irradiance WHERE tanggal BETWEEN DATE_SUB(CURDATE(), INTERVAL 3 DAY) AND CURDATE() GROUP BY tanggal"
-        result = connection(query, 'select')
+        query = f"SELECT tanggal FROM irradiance WHERE tanggal BETWEEN DATE_SUB(CURDATE(), INTERVAL %s DAY) AND CURDATE() GROUP BY tanggal"
+        value = [3]
+        result = connection(query, 'select', value)
         return result
 
    
