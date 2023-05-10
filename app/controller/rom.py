@@ -1,6 +1,6 @@
 from db import connection
 from flask import request
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 
 class ROM:
@@ -44,6 +44,12 @@ class ROM:
                 self.insert_bss(2, new_tanggal, status2[i])
                 start_tanggal += timedelta(days=1)
 
+    def get_week(self):
+        today = date.today()
+        last_friday = today - timedelta(days = today.weekday() + 3)
+        next_thursday = today + timedelta(days = 3 - today.weekday())
+        return [last_friday, next_thursday]
+
     def insert_pltd(self, unit, tanggal, status):
         query = f"INSERT INTO rompltd (unit, tanggal, status) VALUES (%s, %s, %s)"
         value = [unit, tanggal, status]
@@ -74,5 +80,11 @@ class ROM:
     def get_bss(self, tanggal):
         query = f"SELECT * FROM rombss WHERE tanggal = %s"
         value = [tanggal]
+        result = connection(query, 'select', value)
+        return result
+
+    def get_pltd_week(self):
+        query = f"SELECT * FROM rompltd WHERE tanggal >= %s AND tanggal <= %s"
+        value = self.get_week()
         result = connection(query, 'select', value)
         return result

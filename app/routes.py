@@ -123,6 +123,19 @@ def get_rompltd(tanggal):
     return jsonify(response), 200
 
 
+@app.route('/rompltd/week')
+def get_rompltd_week():
+    object_rom = ROM()
+    result = object_rom.get_pltd_week()
+
+    response = {
+        'message':'Sukses',
+        'data': result
+    }   
+    
+    return jsonify(response), 200
+
+
 @app.route('/rompv/<tanggal>')
 def get_rompv(tanggal):
     object_rom = ROM()
