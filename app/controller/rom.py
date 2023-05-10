@@ -88,3 +88,15 @@ class ROM:
         value = self.get_week()
         result = connection(query, 'select', value)
         return result
+    
+    def get_pv_week(self):
+        query = f"SELECT * FROM rompv WHERE tanggal >= %s AND tanggal <= %s"
+        value = self.get_week()
+        result = connection(query, 'select', value)
+        return result
+    
+    def get_bss_week(self):
+        query = f"SELECT * FROM rombss WHERE tanggal >= %s AND tanggal <= %s"
+        value = self.get_week()
+        result = connection(query, 'select', value)
+        return result

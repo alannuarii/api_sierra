@@ -149,10 +149,36 @@ def get_rompv(tanggal):
     return jsonify(response), 200
 
 
+@app.route('/rompv/week')
+def get_rompv_week():
+    object_rom = ROM()
+    result = object_rom.get_pv_week()
+
+    response = {
+        'message':'Sukses',
+        'data': result
+    }   
+    
+    return jsonify(response), 200
+
+
 @app.route('/rombss/<tanggal>')
 def get_rombss(tanggal):
     object_rom = ROM()
     result = object_rom.get_bss(tanggal)
+
+    response = {
+        'message':'Sukses',
+        'data': result
+    }   
+    
+    return jsonify(response), 200
+
+
+@app.route('/rombss/week')
+def get_rombss_week():
+    object_rom = ROM()
+    result = object_rom.get_bss_week()
 
     response = {
         'message':'Sukses',
