@@ -46,8 +46,12 @@ class ROM:
 
     def get_week(self):
         today = date.today()
-        last_friday = today - timedelta(days = today.weekday() + 3)
-        next_thursday = today + timedelta(days = 3 - today.weekday())
+        if today.weekday() == 4: 
+            last_friday = today
+            next_thursday = today + timedelta(days=6)
+        else:
+            last_friday = today - timedelta(days=today.weekday() + 3)
+            next_thursday = today + timedelta(days=3 - today.weekday())
         return [last_friday, next_thursday]
 
     def insert_pltd(self, unit, tanggal, status):
