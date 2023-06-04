@@ -52,13 +52,8 @@ class ROM:
 
     def get_week(self):
         today = date.today()
-        if today.weekday() == 4:  
-            last_friday = today
-        else:
-            days_to_last_friday = (today.weekday() - 4) % 7
-            last_friday = today - timedelta(days=days_to_last_friday)
-        days_to_next_thursday = (3 - today.weekday() + 7) % 7
-        next_thursday = today + timedelta(days=days_to_next_thursday)
+        last_friday = today - timedelta(days = today.weekday() + 3)
+        next_thursday = today + timedelta(days = 3 - today.weekday())
         return [last_friday, next_thursday]
     
     def get_check_week(self, friday):
