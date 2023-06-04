@@ -52,7 +52,7 @@ class ROM:
 
     def get_week(self):
         today = date.today()
-        if today.weekday() == 4:  # Jumat
+        if today.weekday() == 4:
             last_friday = today
         else:
             days_to_last_friday = (today.weekday() - 4) % 7
