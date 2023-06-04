@@ -10,6 +10,10 @@ class Irradiance:
         tanggal = request.form['tanggal']
         file = request.files['irradiance']
 
+        check_tanggal = self.get_date_irradiance(tanggal)
+        if check_tanggal:
+            self.delete_irradiance(tanggal)
+
         data_csv = pd.read_csv(file)
         data_dict = data_csv.iloc[0].to_dict()
 
@@ -31,6 +35,18 @@ class Irradiance:
         query = f"INSERT INTO irradiance (tanggal, waktu, value) VALUES (%s, %s, %s)"
         value = [tanggal, waktu, value]
         connection(query, 'insert', value)
+
+    def delete_irradiance(self, tanggal):
+        query = f"DELETE FROM irradiance WHERE tanggal = %s"
+        value = [tanggal]
+        connection(query, 'delete', value)
+
+
+    def get_date_irradiance(self, tanggal):
+        query = f"SELECT tanggal FROM irradiance WHERE tanggal = %s GROUP BY tanggal"
+        value = [tanggal]
+        result = connection(query, 'select', value)
+        return result
 
     def get_irradiance(self, tanggal):
         tanggal_plus = datetime.strptime(tanggal, '%Y-%m-%d')

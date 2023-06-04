@@ -4,6 +4,7 @@ from app.controller.irradiance import Irradiance
 from app.controller.weather import Weather
 from app.controller.rom import ROM
 from app.controller.user import User
+from app.controller.prediction import prediction, get_arr_irradiance
 
 
 @app.route('/login', methods=['GET','POST'])
@@ -50,6 +51,18 @@ def get_irradiance(tanggal):
     response = {
         'message':'Sukses',
         'data': result
+    }
+
+    return jsonify(response), 200
+
+
+@app.route('/irradiance-array/<tanggal>')
+def get_array_irradiance(tanggal):
+    data = get_arr_irradiance(tanggal)
+
+    response = {
+        'message':'Sukses',
+        'data': data
     }
 
     return jsonify(response), 200
@@ -196,6 +209,30 @@ def get_irradiance_4days():
     response = {
         'message':'Sukses',
         'data': result
+    }   
+    
+    return jsonify(response), 200
+
+
+@app.route('/forcast-today/<tanggal>')
+def get_forcast_today(tanggal):
+    today = prediction(tanggal)
+
+    response = {
+        'message':'Sukses',
+        'data': today
+    }   
+    
+    return jsonify(response), 200
+
+
+@app.route('/forcast-tomorrow/<tanggal>')
+def get_forcast_tomorrow(tanggal):
+    today = prediction(tanggal)
+
+    response = {
+        'message':'Sukses',
+        'data': today
     }   
     
     return jsonify(response), 200
