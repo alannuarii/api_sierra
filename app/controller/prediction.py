@@ -1,8 +1,5 @@
-import json
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.tree import DecisionTreeClassifier
-from datetime import date
 from app.data.training import training_data
 from app.controller.rom import ROM
 from app.controller.weather import Weather
@@ -32,8 +29,6 @@ def get_arr_irradiance(tanggal):
     return result
 
 def prediction(tanggal):
-    # today = date.today()
-
     object_rom = ROM()
     object_weather = Weather()
 
@@ -76,12 +71,10 @@ def prediction(tanggal):
     label_encoder = LabelEncoder()
     y_encoded = label_encoder.fit_transform(y)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y_encoded, test_size=0.2, random_state=42)
+    X_train, y_train = X, y_encoded
 
     clf = DecisionTreeClassifier()
     clf.fit(X_train, y_train)
-
-    y_pred = clf.predict(X_test)
 
     X_test = [[data_testing[f] for f in features]]
     y_pred = clf.predict(X_test)
