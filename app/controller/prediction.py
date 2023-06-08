@@ -28,7 +28,7 @@ def get_arr_irradiance(tanggal):
     result = ema_values[-15:]
     return result
 
-def prediction(tanggal):
+def prediction(tanggal, weather):
     object_rom = ROM()
     object_weather = Weather()
 
@@ -40,7 +40,7 @@ def prediction(tanggal):
     total_pv = pv[0]['status'] + pv[1]['status']
     total_bss = bss[0]['status'] + bss[1]['status']
 
-    weather_today = int(object_weather.get_weather('12'))
+    weather_today = int(object_weather.get_weather(weather))
 
     if weather_today == 0 or weather_today == 1 or weather_today == 2:
         weather_today = 1
