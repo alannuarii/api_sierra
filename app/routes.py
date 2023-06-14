@@ -11,16 +11,28 @@ from app.controller.prediction import prediction, get_arr_irradiance
 def login():
     object_user = User()
     if request.method == "POST":
-        result = object_user.login()
+        try:
+            result = object_user.login()
+            return jsonify(result), 200
 
-    return jsonify(result), 200
+        except Exception as e:
+            error_message = {"message": "Terjadi kesalahan", "error": str(e)}
+            return jsonify(error_message), 500
+    
+    response = {"message": "Metode HTTP yang diperlukan: POST"}
+    return jsonify(response), 405
 
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        object_user = User()
-        result = object_user.register()
+        try:
+            object_user = User()
+            result = object_user.register()
+
+        except Exception as e:
+            error_response = {"message": "Data gagal terkirim", "error": str(e)}
+            return jsonify(error_response), 500
 
     response = {"message": "Data berhasil dikirim", "result": result}
     return jsonify(response), 200
@@ -49,7 +61,7 @@ def get_irradiance(tanggal):
 
         response = {"message": "Sukses", "data": result}
         return jsonify(response), 200
-    
+
     except Exception as e:
         error_response = {"message": "Terjadi kesalahan", "error": str(e)}
         return jsonify(error_response), 500
@@ -62,10 +74,10 @@ def get_array_irradiance(tanggal):
 
         response = {"message": "Sukses", "data": data}
         return jsonify(response), 200
-    
+
     except Exception as e:
         error_response = {"message": "Terjadi kesalahan", "error": str(e)}
-        return jsonify(error_response), 500    
+        return jsonify(error_response), 500
 
 
 @app.route("/weather-today")
@@ -87,7 +99,7 @@ def get_weather_today():
             },
         }
         return jsonify(response), 200
-    
+
     except Exception as e:
         error_response = {"message": "Terjadi kesalahan", "error": str(e)}
         return jsonify(error_response), 500
@@ -113,7 +125,7 @@ def get_weather_tomorrow():
         }
 
         return jsonify(response), 200
-    
+
     except Exception as e:
         error_response = {"message": "Terjadi kesalahan", "error": str(e)}
         return jsonify(error_response), 500
@@ -142,7 +154,7 @@ def get_rompltd(tanggal):
 
         response = {"message": "Sukses", "data": result}
         return jsonify(response), 200
-    
+
     except Exception as e:
         error_response = {"message": "Terjadi kesalahan", "error": str(e)}
         return jsonify(error_response), 500
@@ -156,7 +168,7 @@ def get_rompltd_week():
 
         response = {"message": "Sukses", "data": result}
         return jsonify(response), 200
-    
+
     except Exception as e:
         error_response = {"message": "Terjadi kesalahan", "error": str(e)}
         return jsonify(error_response), 500
@@ -170,7 +182,7 @@ def get_rompv(tanggal):
 
         response = {"message": "Sukses", "data": result}
         return jsonify(response), 200
-    
+
     except Exception as e:
         error_response = {"message": "Terjadi kesalahan", "error": str(e)}
         return jsonify(error_response), 500
@@ -212,7 +224,7 @@ def get_rombss_week():
 
         response = {"message": "Sukses", "data": result}
         return jsonify(response), 200
-    
+
     except Exception as e:
         error_response = {"message": "Terjadi kesalahan", "error": str(e)}
         return jsonify(error_response), 500
@@ -226,7 +238,7 @@ def get_irradiance_4days():
 
         response = {"message": "Sukses", "data": result}
         return jsonify(response), 200
-    
+
     except Exception as e:
         error_response = {"message": "Terjadi kesalahan", "error": str(e)}
         return jsonify(error_response), 500
@@ -239,7 +251,7 @@ def get_forcast_today(tanggal):
 
         response = {"message": "Sukses", "data": today}
         return jsonify(response), 200
-    
+
     except Exception as e:
         error_response = {"message": "Terjadi kesalahan", "error": str(e)}
         return jsonify(error_response), 500
@@ -252,7 +264,7 @@ def get_forcast_tomorrow(tanggal):
 
         response = {"message": "Sukses", "data": tomorrow}
         return jsonify(response), 200
-    
+
     except Exception as e:
         error_response = {"message": "Terjadi kesalahan", "error": str(e)}
         return jsonify(error_response), 500
