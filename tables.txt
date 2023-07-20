@@ -25,3 +25,11 @@ CREATE TABLE user
     role INT NOT NULL,
     PRIMARY KEY (id_user)
 )
+
+CREATE TABLE weather
+(
+    id_weather INT NOT NULL AUTO_INCREMENT,
+    tanggal DATE NOT NULL,
+    kode INT NOT NULL,
+    PRIMARY KEY (id_weather)
+)
