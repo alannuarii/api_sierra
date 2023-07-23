@@ -64,5 +64,10 @@ class Irradiance:
         value = [3]
         result = connection(query, 'select', value)
         return result
-
+    
+    def get_last_irradiance(self):
+        query = f"SELECT tanggal FROM irradiance ORDER BY tanggal DESC LIMIT %s"
+        value = [1]
+        result = connection(query, 'select', value)
+        return result
    
