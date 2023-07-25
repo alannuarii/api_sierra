@@ -5,6 +5,7 @@ from app.controller.weather import Weather
 from app.controller.rom import ROM
 from app.controller.user import User
 from app.controller.prediction import prediction, get_arr_irradiance
+from app.controller.rekap import rekap_data, post_max_irradiance
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -282,3 +283,10 @@ def get_forcast_tomorrow(tanggal):
     except Exception as e:
         error_response = {"message": "Terjadi kesalahan", "error": str(e)}
         return jsonify(error_response), 500
+    
+
+@app.route('/test')
+def test_route():
+    post_max_irradiance()
+    response = {"message": "Sukses"}
+    return jsonify(response), 200

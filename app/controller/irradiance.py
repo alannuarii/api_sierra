@@ -54,7 +54,7 @@ class Irradiance:
         full_akhir = tanggal_plus - timedelta(days=1)
         awal = full_awal.strftime('%Y-%m-%d')
         akhir = full_akhir.strftime('%Y-%m-%d')
-        query = f"SELECT waktu, value FROM irradiance WHERE tanggal BETWEEN %s AND %s"
+        query = f"SELECT waktu, value FROM irradiance WHERE tanggal BETWEEN %s AND %s ORDER BY tanggal"
         value = [awal, akhir]
         result = connection(query, 'select', value)
         return result
@@ -70,4 +70,6 @@ class Irradiance:
         value = [1]
         result = connection(query, 'select', value)
         return result
+    
+
    
