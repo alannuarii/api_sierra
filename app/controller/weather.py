@@ -53,6 +53,13 @@ class Weather:
         result = connection(query, 'select', value)
         return result
     
+    def get_weather_month(self, bulan):
+        month = int(bulan[5:])
+        query = f"SELECT tanggal, kode FROM weather WHERE EXTRACT(MONTH FROM tanggal) = %s"
+        value = [month]
+        result = connection(query, 'select', value)
+        return result
+    
     def update_kode_weather(self, tanggal):
         query = f"UPDATE weather SET kode = %s WHERE tanggal = %s"
         value = [self.get_weather('12'), tanggal]

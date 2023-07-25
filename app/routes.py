@@ -4,8 +4,14 @@ from app.controller.irradiance import Irradiance
 from app.controller.weather import Weather
 from app.controller.rom import ROM
 from app.controller.user import User
-from app.controller.prediction import prediction, get_arr_irradiance
-from app.controller.rekap import rekap_data, post_max_irradiance
+from app.controller.prediction import (
+    prediction,
+    get_arr_irradiance,
+    get_month_prediction,
+)
+from app.controller.rekap import (
+    rekap_data,
+)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -19,7 +25,7 @@ def login():
         except Exception as e:
             error_message = {"message": "Terjadi kesalahan", "error": str(e)}
             return jsonify(error_message), 500
-    
+
     response = {"message": "Metode HTTP yang diperlukan: POST"}
     return jsonify(response), 405
 
@@ -95,6 +101,34 @@ def get_last_data_irradiance():
         return jsonify(error_response), 500
 
 
+@app.route("/irradiance/tanggal")
+def get_irradiance_4days():
+    try:
+        object_irradiance = Irradiance()
+        result = object_irradiance.get_4days()
+
+        response = {"message": "Sukses", "data": result}
+        return jsonify(response), 200
+
+    except Exception as e:
+        error_response = {"message": "Terjadi kesalahan", "error": str(e)}
+        return jsonify(error_response), 500
+
+
+@app.route("/irradiance/rekap/<month>")
+def get_irradiance_month(month):
+    try:
+        object_irradiance = Irradiance()
+        result = object_irradiance.get_month_max_irradiance(month)
+
+        response = {"message": "Sukses", "data": result}
+        return jsonify(response), 200
+
+    except Exception as e:
+        error_response = {"message": "Terjadi kesalahan", "error": str(e)}
+        return jsonify(error_response), 500
+
+
 @app.route("/weather-today")
 def get_weather_today():
     try:
@@ -139,6 +173,20 @@ def get_weather_tomorrow():
             },
         }
 
+        return jsonify(response), 200
+
+    except Exception as e:
+        error_response = {"message": "Terjadi kesalahan", "error": str(e)}
+        return jsonify(error_response), 500
+
+
+@app.route("/weather/rekap/<month>")
+def get_weather_month(month):
+    try:
+        object_weather = Weather()
+        result = object_weather.get_weather_month(month)
+
+        response = {"message": "Sukses", "data": result}
         return jsonify(response), 200
 
     except Exception as e:
@@ -245,13 +293,83 @@ def get_rombss_week():
         return jsonify(error_response), 500
 
 
-@app.route("/irradiance/tanggal")
-def get_irradiance_4days():
+@app.route("/rompltd/rekap/<month>")
+def get_rompltd_month(month):
     try:
-        object_irradiance = Irradiance()
-        result = object_irradiance.get_4days()
+        object_rom = ROM()
+        result = object_rom.get_data_month(month, "rompltd")
+        unit6 = []
+        unit7 = []
 
-        response = {"message": "Sukses", "data": result}
+        for item in result:
+            unit = item["unit"]
+            if item["status"] == 1:
+                item["status"] = "Stand by"
+            elif item["status"] == 0:
+                item["status"] = "Pemeliharaan"
+
+            if unit == 6:
+                unit6.append(item)
+            elif unit == 7:
+                unit7.append(item)
+
+        response = {"message": "Sukses", "data": [unit6, unit7]}
+        return jsonify(response), 200
+
+    except Exception as e:
+        error_response = {"message": "Terjadi kesalahan", "error": str(e)}
+        return jsonify(error_response), 500
+
+
+@app.route("/rompv/rekap/<month>")
+def get_rompv_month(month):
+    try:
+        object_rom = ROM()
+        result = object_rom.get_data_month(month, "rompv")
+        unit1 = []
+        unit2 = []
+
+        for item in result:
+            unit = item["unit"]
+            if item["status"] == 1:
+                item["status"] = "Stand by"
+            elif item["status"] == 0:
+                item["status"] = "Pemeliharaan"
+
+            if unit == 1:
+                unit1.append(item)
+            elif unit == 2:
+                unit2.append(item)
+
+        response = {"message": "Sukses", "data": [unit1, unit2]}
+        return jsonify(response), 200
+
+    except Exception as e:
+        error_response = {"message": "Terjadi kesalahan", "error": str(e)}
+        return jsonify(error_response), 500
+
+
+@app.route("/rombss/rekap/<month>")
+def get_rombss_month(month):
+    try:
+        object_rom = ROM()
+        result = object_rom.get_data_month(month, "rombss")
+        unit1 = []
+        unit2 = []
+
+        for item in result:
+            unit = item["unit"]
+            if item["status"] == 1:
+                item["status"] = "Stand by"
+            elif item["status"] == 0:
+                item["status"] = "Pemeliharaan"
+
+            if unit == 1:
+                unit1.append(item)
+            elif unit == 2:
+                unit2.append(item)
+
+        response = {"message": "Sukses", "data": [unit1, unit2]}
         return jsonify(response), 200
 
     except Exception as e:
@@ -283,10 +401,23 @@ def get_forcast_tomorrow(tanggal):
     except Exception as e:
         error_response = {"message": "Terjadi kesalahan", "error": str(e)}
         return jsonify(error_response), 500
-    
 
-@app.route('/test')
-def test_route():
-    post_max_irradiance()
-    response = {"message": "Sukses"}
-    return jsonify(response), 200
+
+@app.route("/mode/rekap/<month>")
+def get_mode_month(month):
+    try:
+        result = get_month_prediction(month)
+
+        response = {"message": "Sukses", "data": result}
+        return jsonify(response), 200
+
+    except Exception as e:
+        error_response = {"message": "Terjadi kesalahan", "error": str(e)}
+        return jsonify(error_response), 500
+
+
+# @app.route("/test")
+# def test_route():
+#     result = rekap_data("2023-06")
+
+#     return jsonify(result), 200

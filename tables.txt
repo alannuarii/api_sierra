@@ -42,3 +42,10 @@ CREATE TABLE max_irradiance
     PRIMARY KEY (id_max)
 )
 
+CREATE TABLE mode_operasi
+(
+    id_mode INT NOT NULL AUTO_INCREMENT,
+    tanggal DATE NOT NULL,
+    mode VARCHAR(15) NOT NULL,
+    PRIMARY KEY (id_mode)
+)

@@ -126,8 +126,17 @@ class ROM:
         result = connection(query, 'select', value)
         return result
     
+    def get_data_month(self, bulan, unit):
+        month = int(bulan[5:])
+        query = f"SELECT unit, tanggal, status FROM {unit} WHERE EXTRACT(MONTH FROM tanggal) = %s"
+        value = [month]
+        result = connection(query, 'select', value)
+        return result
+    
     def delete_data_week(self, unit, friday):
         query = f"DELETE FROM {unit} WHERE tanggal >= %s AND tanggal <= %s"
         value = self.get_check_week(friday)
         connection(query, 'delete', value)
+
+    
     

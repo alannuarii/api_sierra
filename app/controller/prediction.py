@@ -4,6 +4,7 @@ from app.data.training import training_data
 from app.controller.rom import ROM
 from app.controller.weather import Weather
 from app.controller.irradiance import Irradiance
+from db import connection
 
 def get_arr_irradiance(tanggal):
     object_irradiance = Irradiance()
@@ -27,6 +28,57 @@ def get_arr_irradiance(tanggal):
 
     result = ema_values[-15:]
     return result
+
+def new_prediction(tanggal):
+    object_rom = ROM()
+    object_weather = Weather()
+
+    pltd = object_rom.get_pltd(tanggal)
+    pv = object_rom.get_pv(tanggal)
+    bss = object_rom.get_bss(tanggal)
+
+    total_pltd = pltd[0]['status'] + pltd[1]['status']
+    total_pv = pv[0]['status'] + pv[1]['status']
+    total_bss = bss[0]['status'] + bss[1]['status']
+
+    weather_today = object_weather.get_kode_weather(tanggal)[0]['kode']
+
+    irr = max(get_arr_irradiance(tanggal))
+    
+    features = ['pltd', 'pv', 'bss', 'cuaca', 'irr']
+    target = 'mode'
+
+    if irr > 700:
+        irr = 1
+    else:
+        irr = 0
+
+    data_testing = {
+    'pv': total_pv,
+    'bss': total_bss,
+    'pltd': total_pltd,
+    'cuaca': weather_today,
+    'irr': irr,
+    }
+
+    X = [[data[f] for f in features] for data in training_data]
+    y = [data[target] for data in training_data]
+
+    label_encoder = LabelEncoder()
+    y_encoded = label_encoder.fit_transform(y)
+
+    X_train, y_train = X, y_encoded
+
+    clf = DecisionTreeClassifier()
+    clf.fit(X_train, y_train)
+
+    X_test = [[data_testing[f] for f in features]]
+    y_pred = clf.predict(X_test)
+
+    mode_predicted = label_encoder.inverse_transform(y_pred)
+
+    return mode_predicted[0]
+
 
 def prediction(tanggal, weather):
     object_rom = ROM()
@@ -82,3 +134,11 @@ def prediction(tanggal, weather):
     mode_predicted = label_encoder.inverse_transform(y_pred)
 
     return mode_predicted[0]
+
+
+def get_month_prediction(bulan):
+    month = int(bulan[5:])
+    query = f"SELECT tanggal, mode FROM mode_operasi WHERE EXTRACT(MONTH FROM tanggal) = %s"
+    value = [month]
+    result = connection(query, 'select', value)
+    return result
