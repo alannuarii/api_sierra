@@ -6,6 +6,7 @@ from app.controller.weather import Weather
 from app.controller.irradiance import Irradiance
 from db import connection
 
+
 def get_arr_irradiance(tanggal):
     object_irradiance = Irradiance()
     data = object_irradiance.get_irradiance(tanggal)
@@ -15,7 +16,9 @@ def get_arr_irradiance(tanggal):
     ema_values = []  # Menyimpan nilai-nilai EMA
     times = []  # Menyimpan waktu
 
-    prev_ema = data[0]["value"]  # Nilai EMA pertama diinisialisasi dengan nilai pertama dalam data
+    prev_ema = data[0][
+        "value"
+    ]  # Nilai EMA pertama diinisialisasi dengan nilai pertama dalam data
     multiplier = 2 / (period + 1)  # Menghitung faktor pengali EMA
 
     for i in range(len(data)):
@@ -29,6 +32,7 @@ def get_arr_irradiance(tanggal):
     result = ema_values[-15:]
     return result
 
+
 def new_prediction(tanggal):
     object_rom = ROM()
     object_weather = Weather()
@@ -37,16 +41,21 @@ def new_prediction(tanggal):
     pv = object_rom.get_pv(tanggal)
     bss = object_rom.get_bss(tanggal)
 
-    total_pltd = pltd[0]['status'] + pltd[1]['status']
-    total_pv = pv[0]['status'] + pv[1]['status']
-    total_bss = bss[0]['status'] + bss[1]['status']
+    total_pltd = pltd[0]["status"] + pltd[1]["status"]
+    total_pv = pv[0]["status"] + pv[1]["status"]
+    total_bss = bss[0]["status"] + bss[1]["status"]
 
-    weather_today = object_weather.get_kode_weather(tanggal)[0]['kode']
+    weather = object_weather.get_kode_weather(tanggal)[0]["kode"]
+
+    if weather == 0 or weather == 1 or weather == 2:
+        weather = 1
+    else:
+        weather = 0
 
     irr = max(get_arr_irradiance(tanggal))
-    
-    features = ['pltd', 'pv', 'bss', 'cuaca', 'irr']
-    target = 'mode'
+
+    features = ["pltd", "pv", "bss", "cuaca", "irr"]
+    target = "mode"
 
     if irr > 700:
         irr = 1
@@ -54,11 +63,11 @@ def new_prediction(tanggal):
         irr = 0
 
     data_testing = {
-    'pv': total_pv,
-    'bss': total_bss,
-    'pltd': total_pltd,
-    'cuaca': weather_today,
-    'irr': irr,
+        "pv": total_pv,
+        "bss": total_bss,
+        "pltd": total_pltd,
+        "cuaca": weather,
+        "irr": irr,
     }
 
     X = [[data[f] for f in features] for data in training_data]
@@ -88,9 +97,9 @@ def prediction(tanggal, weather):
     pv = object_rom.get_pv(tanggal)
     bss = object_rom.get_bss(tanggal)
 
-    total_pltd = pltd[0]['status'] + pltd[1]['status']
-    total_pv = pv[0]['status'] + pv[1]['status']
-    total_bss = bss[0]['status'] + bss[1]['status']
+    total_pltd = pltd[0]["status"] + pltd[1]["status"]
+    total_pv = pv[0]["status"] + pv[1]["status"]
+    total_bss = bss[0]["status"] + bss[1]["status"]
 
     weather_today = int(object_weather.get_weather(weather))
 
@@ -100,9 +109,9 @@ def prediction(tanggal, weather):
         weather_today = 0
 
     irr = max(get_arr_irradiance(tanggal))
-    
-    features = ['pltd', 'pv', 'bss', 'cuaca', 'irr']
-    target = 'mode'
+
+    features = ["pltd", "pv", "bss", "cuaca", "irr"]
+    target = "mode"
 
     if irr > 700:
         irr = 1
@@ -110,11 +119,11 @@ def prediction(tanggal, weather):
         irr = 0
 
     data_testing = {
-    'pv': total_pv,
-    'bss': total_bss,
-    'pltd': total_pltd,
-    'cuaca': weather_today,
-    'irr': irr,
+        "pv": total_pv,
+        "bss": total_bss,
+        "pltd": total_pltd,
+        "cuaca": weather_today,
+        "irr": irr,
     }
 
     X = [[data[f] for f in features] for data in training_data]
@@ -138,7 +147,9 @@ def prediction(tanggal, weather):
 
 def get_month_prediction(bulan):
     month = int(bulan[5:])
-    query = f"SELECT tanggal, mode FROM mode_operasi WHERE EXTRACT(MONTH FROM tanggal) = %s"
+    query = (
+        f"SELECT tanggal, mode FROM mode_operasi WHERE EXTRACT(MONTH FROM tanggal) = %s"
+    )
     value = [month]
-    result = connection(query, 'select', value)
+    result = connection(query, "select", value)
     return result

@@ -9,9 +9,7 @@ from app.controller.prediction import (
     get_arr_irradiance,
     get_month_prediction,
 )
-from app.controller.rekap import (
-    rekap_data,
-)
+from app.controller.rekap import post_mode_operasi
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -416,8 +414,8 @@ def get_mode_month(month):
         return jsonify(error_response), 500
 
 
-# @app.route("/test")
-# def test_route():
-#     result = rekap_data("2023-06")
-
-#     return jsonify(result), 200
+@app.route("/test")
+def test_route():
+    post_mode_operasi()
+    response = {"message": "Sukses"}
+    return jsonify(response), 200
