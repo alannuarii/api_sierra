@@ -414,8 +414,8 @@ def get_mode_month(month):
         return jsonify(error_response), 500
 
 
-@app.route("/test")
-def test_route():
-    post_mode_operasi()
-    response = {"message": "Sukses"}
-    return jsonify(response), 200
+# @app.route("/test")
+# def test_route():
+#     print(ROM().auto_upload_rom())
+#     response = {"message": "Sukses"}
+#     return jsonify(response), 200
