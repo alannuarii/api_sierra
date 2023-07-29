@@ -9,7 +9,7 @@ from app.controller.prediction import (
     get_arr_irradiance,
     get_month_prediction,
 )
-from app.controller.rekap import post_mode_operasi
+from app.controller.rekap import post_mode_operasi, post_max_irradiance
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -412,10 +412,27 @@ def get_mode_month(month):
     except Exception as e:
         error_response = {"message": "Terjadi kesalahan", "error": str(e)}
         return jsonify(error_response), 500
+    
+
+@app.route('/sync', methods=["GET", "POST"])
+def synchrone_data():
+    if request.method == "POST":
+        try:
+            post_max_irradiance()
+            post_mode_operasi()
+
+        except Exception as e:
+            error_response = {"message": "Gagal synchrone data", "error": str(e)}
+            return jsonify(error_response), 500
+
+    response = {"message": "Synchrone data berhasil"}
+    return jsonify(response), 200
 
 
-# @app.route("/test")
-# def test_route():
-#     print(ROM().auto_upload_rom())
-#     response = {"message": "Sukses"}
-#     return jsonify(response), 200
+
+@app.route("/test")
+def test_route():
+    post_max_irradiance()
+    post_mode_operasi()
+    response = {"message": "Sukses"}
+    return jsonify(response), 200

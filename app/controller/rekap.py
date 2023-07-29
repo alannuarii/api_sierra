@@ -1,28 +1,21 @@
 from app.controller.rom import ROM
 from app.controller.weather import Weather
 from app.controller.irradiance import Irradiance
-from app.controller.prediction import get_arr_irradiance, new_prediction, get_month_prediction
-from datetime import datetime, timedelta
+from app.controller.prediction import (
+    get_arr_irradiance,
+    new_prediction,
+    get_month_prediction,
+)
+from datetime import datetime, timedelta, date
 from db import connection
 import random
 
 
-def rekap_data(bulan):
-    rompltd = ROM().get_data_month(bulan, 'rompltd')
-    rompv = ROM().get_data_month(bulan, 'rompv')
-    rombss = ROM().get_data_month(bulan, 'rombss')
-    weather = Weather().get_weather_month(bulan)
-    max_irradiance = Irradiance().get_month_max_irradiance(bulan)
-    mode_operasi = get_month_prediction(bulan)
-
-    return rompltd
-
-
 def post_max_irradiance():
-    start = "2022-10-06"
-    end = "2023-07-21"
-    start_date = datetime.strptime(start, "%Y-%m-%d")
-    end_date = datetime.strptime(end, "%Y-%m-%d")
+    start_date = Irradiance().get_last_max_irradiance()[0]["tanggal"] + timedelta(
+        days=1
+    )
+    end_date = Irradiance().get_last_irradiance()[0]["tanggal"] + timedelta(days=1)
 
     while start_date <= end_date:
         max_irr = max(get_arr_irradiance(start_date.strftime("%Y-%m-%d")))
@@ -33,10 +26,11 @@ def post_max_irradiance():
 
 
 def post_mode_operasi():
-    start = "2022-10-07"
-    end = "2023-07-21"
-    start_date = datetime.strptime(start, "%Y-%m-%d")
-    end_date = datetime.strptime(end, "%Y-%m-%d")
+    query = f"SELECT tanggal, mode FROM mode_operasi ORDER BY tanggal DESC LIMIT %s"
+    value = [1]
+    last_data = connection(query, "select", value)
+    start_date = last_data[0]["tanggal"] + timedelta(days=1)
+    end_date = Irradiance().get_last_max_irradiance()[0]["tanggal"]
 
     while start_date <= end_date:
         mode = new_prediction(start_date.strftime("%Y-%m-%d"))

@@ -52,7 +52,7 @@ class ROM:
 
     def auto_upload_rom(self, unit):
         status = 1
-        today = datetime.now().strftime("%Y-%m-%d")
+        today = datetime.now()
         if today.weekday() == 4:
             if self.check_rom(unit):
                 pass
@@ -66,7 +66,7 @@ class ROM:
                     for i in range(7):
                         self.insert_pv(1, today, status)
                         self.insert_pv(2, today, status)
-                    today += timedelta(days=1)
+                        today += timedelta(days=1)
                 elif unit == 'rombss':
                     for i in range(7):
                         self.insert_bss(1, today, status)
