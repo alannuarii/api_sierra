@@ -6,7 +6,7 @@ from app.controller.prediction import (
     new_prediction,
     get_month_prediction,
 )
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta
 from db import connection
 import random
 
@@ -38,6 +38,10 @@ def post_mode_operasi():
         value = [start_date.strftime("%Y-%m-%d"), mode]
         connection(query, "insert", value)
         start_date += timedelta(days=1)
+
+
+def data_correction():
+    pass
 
 
 def weather_correction():

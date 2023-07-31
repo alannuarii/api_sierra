@@ -72,9 +72,8 @@ class Irradiance:
         return result
     
     def get_month_max_irradiance(self, bulan):
-        month = int(bulan[5:])
-        query = f"SELECT tanggal, value FROM max_irradiance WHERE EXTRACT(MONTH FROM tanggal) = %s"
-        value = [month]
+        query = f"SELECT tanggal, value FROM max_irradiance WHERE DATE_FORMAT(tanggal, '%Y-%m') = %s"
+        value = [bulan]
         result = connection(query, 'select', value)
         return result
     

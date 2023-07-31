@@ -146,10 +146,7 @@ def prediction(tanggal, weather):
 
 
 def get_month_prediction(bulan):
-    month = int(bulan[5:])
-    query = (
-        f"SELECT tanggal, mode FROM mode_operasi WHERE EXTRACT(MONTH FROM tanggal) = %s"
-    )
-    value = [month]
+    query = f"SELECT tanggal, mode FROM mode_operasi WHERE DATE_FORMAT(tanggal, '%Y-%m') = %s"
+    value = [bulan]
     result = connection(query, "select", value)
     return result

@@ -152,9 +152,8 @@ class ROM:
         return result
 
     def get_data_month(self, bulan, unit):
-        month = int(bulan[5:])
-        query = f"SELECT unit, tanggal, status FROM {unit} WHERE EXTRACT(MONTH FROM tanggal) = %s"
-        value = [month]
+        query = f"SELECT unit, tanggal, status FROM {unit} WHERE DATE_FORMAT(tanggal, '%Y-%m') = %s"
+        value = [bulan]
         result = connection(query, "select", value)
         return result
 

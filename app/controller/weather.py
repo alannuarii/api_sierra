@@ -54,9 +54,8 @@ class Weather:
         return result
     
     def get_weather_month(self, bulan):
-        month = int(bulan[5:])
-        query = f"SELECT tanggal, kode FROM weather WHERE EXTRACT(MONTH FROM tanggal) = %s"
-        value = [month]
+        query = f"SELECT tanggal, kode FROM weather WHERE DATE_FORMAT(tanggal, '%Y-%m') = %s"
+        value = [bulan]
         result = connection(query, 'select', value)
         return result
     
