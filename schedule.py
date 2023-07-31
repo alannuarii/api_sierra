@@ -2,6 +2,7 @@
 
 from app.controller.weather import Weather
 from app.controller.rom import ROM
+from app.controller.rekap import post_max_irradiance, post_mode_operasi, mode_correction
 
 def post_schedule():
     object_weather = Weather()
@@ -10,6 +11,9 @@ def post_schedule():
     object_rom.auto_upload_rom('rompltd')
     object_rom.auto_upload_rom('rompv')
     object_rom.auto_upload_rom('rombss')
+    post_max_irradiance()
+    post_mode_operasi()
+    mode_correction()
 
 if __name__ == "__main__":
     post_schedule()

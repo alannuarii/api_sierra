@@ -49,3 +49,11 @@ CREATE TABLE mode_operasi
     mode VARCHAR(15) NOT NULL,
     PRIMARY KEY (id_mode)
 )
+
+CREATE TABLE correction
+(
+    id_correction INT NOT NULL AUTO_INCREMENT,
+    tanggal DATE NOT NULL,
+    PRIMARY KEY (id_correction),
+    CONSTRAINT unique_tanggal UNIQUE (tanggal)
+)

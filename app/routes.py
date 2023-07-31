@@ -9,7 +9,7 @@ from app.controller.prediction import (
     get_arr_irradiance,
     get_month_prediction,
 )
-from app.controller.rekap import post_mode_operasi, post_max_irradiance
+from app.controller.rekap import post_mode_operasi, post_max_irradiance, mode_correction
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -429,10 +429,22 @@ def synchrone_data():
     return jsonify(response), 200
 
 
+@app.route('/correction', methods=["GET", "POST"])
+def correction():
+    if request.method == "POST":
+        try:
+            mode_correction()
+
+        except Exception as e:
+            error_response = {"message": "Data tidak ditemukan", "error": str(e)}
+            return jsonify(error_response), 500
+
+    response = {"message": "Koreksi data berhasil"}
+    return jsonify(response), 200
+
 
 @app.route("/test")
 def test_route():
-    post_max_irradiance()
-    post_mode_operasi()
+    # data_correction()
     response = {"message": "Sukses"}
     return jsonify(response), 200

@@ -28,6 +28,7 @@ class ROM:
         if jenis == "pltd":
             if self.get_data_week(f"rom{jenis}", tanggal):
                 self.delete_data_week(f"rom{jenis}", tanggal)
+                self.insert_rom_correction(tanggal)
             for i in range(len(status1)):
                 new_tanggal = start_tanggal.strftime("%Y-%m-%d")
                 self.insert_pltd(6, new_tanggal, status1[i])
@@ -36,6 +37,7 @@ class ROM:
         elif jenis == "pv":
             if self.get_data_week(f"rom{jenis}", tanggal):
                 self.delete_data_week(f"rom{jenis}", tanggal)
+                self.insert_rom_correction(tanggal)
             for i in range(len(status1)):
                 new_tanggal = start_tanggal.strftime("%Y-%m-%d")
                 self.insert_pv(1, new_tanggal, status1[i])
@@ -44,6 +46,7 @@ class ROM:
         elif jenis == "bss":
             if self.get_data_week(f"rom{jenis}", tanggal):
                 self.delete_data_week(f"rom{jenis}", tanggal)
+                self.insert_rom_correction(tanggal)
             for i in range(len(status1)):
                 new_tanggal = start_tanggal.strftime("%Y-%m-%d")
                 self.insert_bss(1, new_tanggal, status1[i])
@@ -67,7 +70,7 @@ class ROM:
                         self.insert_pv(1, today, status)
                         self.insert_pv(2, today, status)
                         today += timedelta(days=1)
-                elif unit == 'rombss':
+                elif unit == "rombss":
                     for i in range(7):
                         self.insert_bss(1, today, status)
                         self.insert_bss(2, today, status)
@@ -110,49 +113,49 @@ class ROM:
         connection(query, "insert", value)
 
     def get_pltd(self, tanggal):
-        query = f"SELECT * FROM rompltd WHERE tanggal = %s"
+        query = f"SELECT * FROM rompltd WHERE tanggal = %s ORDER BY tanggal"
         value = [tanggal]
         result = connection(query, "select", value)
         return result
 
     def get_pv(self, tanggal):
-        query = f"SELECT * FROM rompv WHERE tanggal = %s"
+        query = f"SELECT * FROM rompv WHERE tanggal = %s ORDER BY tanggal"
         value = [tanggal]
         result = connection(query, "select", value)
         return result
 
     def get_bss(self, tanggal):
-        query = f"SELECT * FROM rombss WHERE tanggal = %s"
+        query = f"SELECT * FROM rombss WHERE tanggal = %s ORDER BY tanggal"
         value = [tanggal]
         result = connection(query, "select", value)
         return result
 
     def get_pltd_week(self):
-        query = f"SELECT * FROM rompltd WHERE tanggal >= %s AND tanggal <= %s"
+        query = f"SELECT * FROM rompltd WHERE tanggal >= %s AND tanggal <= %s ORDER BY tanggal"
         value = self.get_week()
         result = connection(query, "select", value)
         return result
 
     def get_pv_week(self):
-        query = f"SELECT * FROM rompv WHERE tanggal >= %s AND tanggal <= %s"
+        query = f"SELECT * FROM rompv WHERE tanggal >= %s AND tanggal <= %s ORDER BY tanggal"
         value = self.get_week()
         result = connection(query, "select", value)
         return result
 
     def get_bss_week(self):
-        query = f"SELECT * FROM rombss WHERE tanggal >= %s AND tanggal <= %s"
+        query = f"SELECT * FROM rombss WHERE tanggal >= %s AND tanggal <= %s ORDER BY tanggal"
         value = self.get_week()
         result = connection(query, "select", value)
         return result
 
     def get_data_week(self, unit, friday):
-        query = f"SELECT tanggal FROM {unit} WHERE tanggal >= %s AND tanggal <= %s"
+        query = f"SELECT tanggal FROM {unit} WHERE tanggal >= %s AND tanggal <= %s ORDER BY tanggal"
         value = self.get_check_week(friday)
         result = connection(query, "select", value)
         return result
 
     def get_data_month(self, bulan, unit):
-        query = f"SELECT unit, tanggal, status FROM {unit} WHERE DATE_FORMAT(tanggal, '%Y-%m') = %s"
+        query = f"SELECT unit, tanggal, status FROM {unit} WHERE DATE_FORMAT(tanggal, '%Y-%m') = %s ORDER BY tanggal"
         value = [bulan]
         result = connection(query, "select", value)
         return result
@@ -168,3 +171,13 @@ class ROM:
         value = [today]
         result = connection(query, "select", value)
         return result
+
+    def insert_rom_correction(self, friday):
+        tanggal = self.get_check_week(friday)
+        start = datetime.strptime(tanggal[0], "%Y-%m-%d")
+        end = datetime.strptime(tanggal[1], "%Y-%m-%d")
+        while start <= end:
+            query = f"INSERT INTO correction (tanggal) VALUES (%s)"
+            value = [start.strftime("%Y-%m-%d")]
+            connection(query, "insert", value)
+            start += timedelta(days=1)
