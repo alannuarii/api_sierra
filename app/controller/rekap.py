@@ -4,7 +4,6 @@ from app.controller.irradiance import Irradiance
 from app.controller.prediction import (
     get_arr_irradiance,
     new_prediction,
-    get_month_prediction,
 )
 from datetime import datetime, timedelta
 from db import connection
@@ -14,20 +13,20 @@ import random
 def get_mode_operasi(tanggal):
     query = f"SELECT mode FROM mode_operasi WHERE tanggal = %s"
     value = [tanggal]
-    result = connection(query, 'select', value)
+    result = connection(query, "select", value)
     return result
 
 
 def update_mode_operasi(mode, tanggal):
     query = f"UPDATE mode_operasi SET mode = %s WHERE tanggal = %s"
     value = [mode, tanggal]
-    connection(query, 'update', value)
+    connection(query, "update", value)
 
 
 def delete_correction(tanggal):
     query = f"DELETE from correction WHERE tanggal = %s"
     value = [tanggal]
-    connection(query, 'delete', value)
+    connection(query, "delete", value)
 
 
 def post_max_irradiance():
@@ -36,7 +35,7 @@ def post_max_irradiance():
     )
     end_date = Irradiance().get_last_irradiance()[0]["tanggal"] + timedelta(days=1)
 
-    while start_date <= end_date:
+    while start_date < end_date:
         max_irr = max(get_arr_irradiance(start_date.strftime("%Y-%m-%d")))
         query = "INSERT INTO max_irradiance (tanggal, value) VALUES (%s, %s)"
         value = [start_date.strftime("%Y-%m-%d"), max_irr]
@@ -63,14 +62,21 @@ def mode_correction():
     query = f"SELECT tanggal FROM correction ORDER BY tanggal"
     value = []
     result = connection(query, "select", value)
-    start_date = result[0]["tanggal"]
-    end_date = result[-1]["tanggal"]
+    if len(result) > 0:
+        start_date = result[0]["tanggal"]
+        end_date = result[-1]["tanggal"]
 
-    while start_date <= end_date:
-        if get_mode_operasi(start_date.strftime("%Y-%m-%d"))[0]['mode'] != new_prediction(start_date.strftime("%Y-%m-%d")):
-            update_mode_operasi(new_prediction(start_date.strftime("%Y-%m-%d")), start_date.strftime("%Y-%m-%d"))
-        delete_correction(start_date.strftime("%Y-%m-%d"))
-        start_date += timedelta(days=1)
+        while start_date <= end_date:
+            mode = get_mode_operasi(start_date.strftime("%Y-%m-%d"))
+            if len(mode) > 0:
+                if mode != new_prediction(start_date.strftime("%Y-%m-%d")):
+                    update_mode_operasi(
+                        new_prediction(start_date.strftime("%Y-%m-%d")),
+                        start_date.strftime("%Y-%m-%d"),
+                    )
+                    delete_correction(start_date.strftime("%Y-%m-%d"))
+
+            start_date += timedelta(days=1)
 
 
 def weather_correction():
