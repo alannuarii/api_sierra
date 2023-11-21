@@ -1,6 +1,5 @@
 from sklearn.preprocessing import LabelEncoder
 from sklearn.tree import DecisionTreeClassifier
-from app.data.training import training_data
 from app.controller.rom import ROM
 from app.controller.weather import Weather
 from app.controller.irradiance import Irradiance
@@ -8,7 +7,6 @@ from db import connection
 import pandas as pd
 from joblib import load
 
-# import pickle
 
 # Inisiasi File Model
 md_moma = "app/model/mode_operasi.pkl"
